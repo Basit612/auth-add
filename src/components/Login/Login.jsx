@@ -1,13 +1,37 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../../AuthProvider/AuthProvider";
 
 const Login = () => {
+  const {singInUser,signInGoogle} = useContext(AuthContext);
+  const navigate = useNavigate();
   const handleRegister = (e) => {
     e.preventDefault();
     const email = e.target.email.value;
     const password = e.target.password.value;
     console.log(email, password);
+
+    singInUser(email,password)
+    .then(result=>{
+      console.log(result.user)
+      e.target.reset();
+      navigate("/");
+    })
+    .catch( error =>{
+      console.error(error)
+    })
   }
+   
+  const handleGoogleSingIn =()=>{
+    signInGoogle()
+    .then( result =>{
+      console.log(result.user)
+    })
+    .catch(error =>{
+      console.error(error)
+    })
+  }
+
   return (
     <div className="hero min-h-screen bg-base-200">
       <div className="hero-content flex-col lg:flex-row-reverse">
@@ -59,6 +83,10 @@ const Login = () => {
             <Link to='/register'>
               <button className="btn btn-link">Register</button>
             </Link>
+          </p>
+
+          <p>
+          <button onClick={handleGoogleSingIn} className="btn btn-ghost">Google</button>
           </p>
         </div>
       </div>
